@@ -1,5 +1,5 @@
+import datetime 
 import cv2, numpy as np
-import pickle
 from os import listdir
 from os.path import isfile, isdir, join
 from annoy import AnnoyIndex
@@ -12,8 +12,9 @@ def write_data(data,name):
     name : name of the pickle file
     """
     try:
-        with open(name, "wb") as fi:
-            pickle.dump(data, fi)
+        with open(name, "w") as fi:
+            fi.writelines(data)
+        print(f"[INFO] File Written : {name}")
     except Exception as e:
         print(f"[ERROR] write_data : {e}")
 
@@ -24,8 +25,8 @@ def read_data(name):
     name : name of the pickle file
     """
     try:
-        with open(name, "rb") as fi:
-            data = pickle.load(fi)
+        with open(name, "r") as fi:
+            data = fi.readline()
             return data
     except Exception as e:
         print(f"[ERROR] read_data :  {e}")
@@ -109,8 +110,8 @@ def getNumberOfCameras():
     return arr
 
 
-def getDistance(source, dest):
-    return np.linalg.norm(a-b)
+def getDistance(n1, n2):
+    return np.linalg.norm(n1-n2)
 
 
 def getPrediction(source, face_embeddings, threshold = 0.6):
@@ -120,3 +121,7 @@ def getPrediction(source, face_embeddings, threshold = 0.6):
         if dist <= threshold:
             predictions[ix] = dist
     return predictions
+
+
+def convertMilSeconds(n): 
+    return str(datetime.timedelta(milliseconds = n))
