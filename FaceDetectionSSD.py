@@ -226,7 +226,8 @@ class FaceDetectionSSD():
 if __name__ == "__main__":
     count = 0
     fd = FaceDetectionSSD()
-    cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)
+    # cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    cap = cv2.VideoCapture("data\\vid2.MP4")
     
     try:
         while True:
@@ -242,10 +243,10 @@ if __name__ == "__main__":
                 if cv2.waitKey(1) == 13:
                     break
             else:
-                print("[ INFO ]  Video frame not available...")
+                print("[INFO]  Video frame not available...")
                 break
     except Exception as e:
-        print(f"[ ERROR ] : {e}")
+        print(f"[ERROR] : {e}")
     finally:
         cap.release()
         cv2.destroyAllWindows()    

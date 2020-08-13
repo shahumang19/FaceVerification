@@ -12,7 +12,9 @@ def write_data(data,name):
     name : name of the pickle file
     """
     try:
+        head = "Time \t\t\t -\t Probability \n"
         with open(name, "w") as fi:
+            fi.write(head)
             fi.writelines(data)
         print(f"[INFO] File Written : {name}")
     except Exception as e:
@@ -114,14 +116,51 @@ def getDistance(n1, n2):
     return np.linalg.norm(n1-n2)
 
 
-def getPrediction(source, face_embeddings, threshold = 0.6):
+# def getPrediction(source, face_embeddings, threshold = 0.6):
+#     predictions = {}
+#     for ix, embedding in enumerate(face_embeddings):
+#         dist = getDistance(source, embedding)
+#         if dist <= threshold:
+#             predictions[ix] = dist
+#     return predictions
+
+def getPrediction(sources, face_embeddings, threshold = 0.6):
+    distances = {}
     predictions = {}
+
     for ix, embedding in enumerate(face_embeddings):
-        dist = getDistance(source, embedding)
+        distances[ix] = []
+        for source in sources:
+            dist = getDistance(source, embedding)
+            distances[ix].append(dist)
+    
+    min_dist = [min(distances[key]) for key in distances.keys()]
+    ind, val = np.argmin(min_dist), np.min(min_dist)
+
+    count = 0
+    for dist in distances[ind]:
         if dist <= threshold:
-            predictions[ix] = dist
+            count += 1
+
+    probability = count / len(sources)
+    
+    if probability > 0.0:
+        predictions[0] = probability
+
     return predictions
 
 
 def convertMilSeconds(n): 
     return str(datetime.timedelta(milliseconds = n))
+
+
+def writeVideo(name,frames, FPS):
+    h,w = frames[0].shape[0:2]
+    fourcc = cv2.VideoWriter_fourcc(*'DIVX') 
+    video=cv2.VideoWriter(name, fourcc, FPS,(w,h))
+
+    for frame in frames:
+        video.write(frame)
+
+    video.release()
+    print(f"[INFO] {name} Generated...")

@@ -60,12 +60,13 @@ class Facenet():
                 if verbose == 1 : print(f"Processed : {ix+1}/{len(faces)}");
         except Exception as e:
             print(f"[ERROR] Facenet get_embeddings : {e}")
+            return None
         
         return np.asarray(face_features)
     
     
 if __name__ == "__main__":
     fn = Facenet()
-    tt = cv2.imread("data\\1.jpg")
+    tt = cv2.imread("data\\1.JPG")
     print("------------------------------------------------")
     print(fn.get_embeddings([tt], fn))

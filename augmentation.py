@@ -77,30 +77,36 @@ def gaussian_noise(img, mean=0, sigma=0.03):
 def augmentImage(img):
     cp = img.copy()
     h,w = img.shape[0:2]
-    print(h,w)
-    images = []
+    # print(h,w)
+    images = [img]
 
     # Translate Image
-    # shift_ = int(0.15*w)
-    # images.append(translate(cp, direction='up', shift=shift_))
-    # images.append(translate(cp, direction='down', shift=shift_))
-    # images.append(translate(cp, direction='left', shift=shift_))
-    # images.append(translate(cp, direction='right', shift=shift_))
+    shift_ = int(0.15*w)
+    images.append(translate(cp, direction='up', shift=shift_))
+    images.append(translate(cp, direction='down', shift=shift_))
+    images.append(translate(cp, direction='left', shift=shift_))
+    images.append(translate(cp, direction='right', shift=shift_))
 
     # Crop Image
-    crop_part = (int(w*0.9), int(h*0.9))
-    images.append(random_crop(cp, crop_size=crop_part))
-    images.append(random_crop(cp, crop_size=crop_part))
-    images.append(random_crop(cp, crop_size=crop_part))
-    images.append(random_crop(cp, crop_size=crop_part))
+    # crop_part = (int(w*0.9), int(h*0.9))
+    # images.append(random_crop(cp, crop_size=crop_part))
+    # images.append(random_crop(cp, crop_size=crop_part))
+    # images.append(random_crop(cp, crop_size=crop_part))
+    # images.append(random_crop(cp, crop_size=crop_part))
 
     # Rotate Image
-    images.append(rotate_img(cp, angle=-15))
-    images.append(rotate_img(cp, angle=-30))
-    images.append(rotate_img(cp, angle=15))
-    images.append(rotate_img(cp, angle=30))
-    images.append(rotate_img(cp, angle=-25))
-    images.append(rotate_img(cp, angle=25))
+    negDegrees = [-30, -25, -20, -18, -16, -14, -10, -6, -2]
+    posDegrees = [30, 25, 20, 18, 16, 14, 10, 6, 2]
+
+    for degree in negDegrees +  posDegrees:
+        images.append(rotate_img(cp, angle=degree))
+
+    # images.append(rotate_img(cp, angle=-15))
+    # images.append(rotate_img(cp, angle=-30))
+    # images.append(rotate_img(cp, angle=15))
+    # images.append(rotate_img(cp, angle=30))
+    # images.append(rotate_img(cp, angle=-25))
+    # images.append(rotate_img(cp, angle=25))
 
     # Gaussian Noise Image
     images.append(gaussian_noise(cp, sigma=0.03))
@@ -110,7 +116,7 @@ def augmentImage(img):
 
 
 if __name__ == "__main__":
-    temp = cv2.imread("data\\1.JPG")
+    temp = cv2.imread("data\\2.JPG")
     timg = cv2.resize(temp, (500,500))
     images = augmentImage(timg)
     for ix,i in enumerate(images):
